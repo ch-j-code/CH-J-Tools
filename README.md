@@ -87,7 +87,9 @@ Alpha `0.1.1` is not yet covered by the same range of tests as `0.1.0`, and Wind
 | macOS | Apple Silicon, `arm64` | `.dmg` |
 | Linux | Ubuntu 24.04 LTS, `amd64` | Debian-format `.deb`; `0.1.0` also has a signed APT alpha repository |
 
-No Intel Mac installer is available. Compatibility with other Linux distributions and older Windows versions is not verified; a Debian package format alone does not establish support for every Debian-based system.
+The Linux client is distributed as a DEB package. Ubuntu 24.04 LTS is the primary test platform. The author has also confirmed that both Alpha and Beta run on Zorin OS; the tested Zorin OS version and exact application builds have not been recorded. The same DEB installation procedure applies to Zorin OS.
+
+No Intel Mac installer is available. Compatibility with Linux distributions other than Ubuntu and Zorin OS, and with older Windows versions, is not verified; a Debian package format alone does not establish support for every Debian-based system.
 
 ## Available features
 
