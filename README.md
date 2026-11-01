@@ -85,7 +85,7 @@ Alpha `0.1.1` is not yet covered by the same range of tests as `0.1.0`, and Wind
 | --- | --- | --- |
 | Windows | Windows 11, `x64` | NSIS `.exe` installer |
 | macOS | Apple Silicon, `arm64` | `.dmg` |
-| Linux | Ubuntu 24.04 LTS, `amd64` | Debian-format `.deb`; `0.1.0` also has a signed APT alpha repository |
+| Linux | Ubuntu 24.04 LTS, `amd64` | Debian-format `.deb`; signed APT repositories for Alpha and Beta |
 
 The Linux client is distributed as a DEB package. Ubuntu 24.04 LTS is the primary test platform. The author has also confirmed that both Alpha and Beta run on Zorin OS; the tested Zorin OS version and exact application builds have not been recorded. The same DEB installation procedure applies to Zorin OS.
 
@@ -269,7 +269,7 @@ Distribution notes:
 
 ### Ubuntu APT repository
 
-Ubuntu amd64 users can install and update through the signed [CH-J APT alpha repository](https://sm.ch-j.cz/apt/). See [key verification, repository setup and installation](https://sm.ch-j.eu/en/documentation/updates-and-gpg/). APT installations display operational guidance and require license acceptance when the application first starts and after updates. Use APT for updates to repository installations and avoid starting the application updater during an APT transaction.
+Ubuntu and Zorin OS amd64 users can install and update through the signed [CH-J APT repository](https://sm.ch-j.cz/apt/). The Alpha suite offers `0.1.1`, Beta offers `0.1.0`, and Stable is empty until a stable release is published. Choose `Suites: alpha` or `Suites: beta` in the repository source. See [key verification, repository setup and installation](https://sm.ch-j.eu/en/documentation/updates-and-gpg/). APT installations display operational guidance and require license acceptance when the application first starts and after updates. Use APT for updates to repository installations and avoid starting the application updater during an APT transaction.
 
 ### First launch
 
