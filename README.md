@@ -2,11 +2,11 @@
 
 CH-J Tools is a desktop SSH and SFTP client for Linux server administration, with Windows server support in selected tools, and a local file hash calculator and checksum verification tool for Windows, macOS, and Linux. It combines server profiles, an interactive terminal, a multi-panel file manager, monitoring, log inspection, user administration, NGINX management, disk management, and 49 hashing algorithms in one application.
 
-**Beta 0.1.2** is the current public release, built with Rust and Tauri 2. CH-J Tools was renamed from CH-J Server Manager. On first start, the existing data folder is moved automatically; the Windows installer removes the old installation.
+**Beta 0.1.3** is the current public release, built with Rust and Tauri 2. CH-J Tools was renamed from CH-J Server Manager. On first start, the existing data folder is moved automatically; the Windows installer removes the old installation.
 
 ## Download
 
-### Beta 0.1.2 — current public release
+### Beta 0.1.3 — current public release
 
 | Platform | Architecture | Package |
 | --- | --- | --- |
@@ -82,7 +82,7 @@ NGINX Manager and Apache Manager offer to install certbot when missing; the cert
 
 Standby Helper is a small background process without a WebView, enabled after installation and can be turned off in **Settings → Standby Helper**. It supports start at login, KeySync and file manager context-menu actions: **Verify signature** and **Sign (OpenPGP)** in Finder Quick Actions, Explorer, Nautilus, Nemo and Dolphin.
 
-Quick verification opens a small window. It can use Keychain identities, saved public keys, a public key file you choose, or automatically retrieve a public key from **keys.ch-j.de** using the fingerprint in the signature. An optional expected fingerprint lets you compare the signer. The window shows the key's revocation state on keys.ch-j.de for any key. A changed file is reported as **“signature does not match the file”**.
+Quick verification opens a small window. It can use Keychain identities, saved public keys, a public key file you choose, or automatically retrieve a public key from **keys2.ch-j.de** using the fingerprint in the signature. An optional expected fingerprint lets you compare the signer. The window shows the key's revocation state on keys2.ch-j.de for any key. A changed file is reported as **“signature does not match the file”**.
 
 Context-menu signing lets you choose a primary key or signing subkey, enter its passphrase in the window and write `<file>.asc`.
 
@@ -255,21 +255,23 @@ Generation lives in **Key Generator**, opened from Keychain shortcuts for SSH, O
 
 | Profile | Format and algorithms |
 |---|---|
-| **V6 — default** | [RFC 9580](https://www.rfc-editor.org/rfc/rfc9580.html); Ed25519/X25519 or RSA 3072/4096 |
-| **V5 — alternative** | [LibrePGP draft-koch-librepgp-06](https://www.ietf.org/archive/id/draft-koch-librepgp-06.txt); distinct V5 keys, signatures and fingerprints, Ed25519Legacy/Curve25519Legacy, RSA 3072/4096 or DSA; requires compatible recipient software |
-| **V4 — compatibility** | [RFC 4880](https://www.rfc-editor.org/rfc/rfc4880.html); Ed25519Legacy/Curve25519Legacy, RSA 3072/4096 or DSA |
-| **V3 — legacy** | Historical [RFC 2440](https://www.rfc-editor.org/rfc/rfc2440.html) RSA 1024/2048; optional validity at creation rounded up to whole days |
-| **V2 — legacy** | [RFC 1991](https://www.rfc-editor.org/rfc/rfc1991.html) PGP 2.x RSA 1024/2048; unlimited validity in this profile |
+| **V6 — default** | [RFC 9580](https://www.rfc-editor.org/rfc/rfc9580.html) (current standard; post-quantum algorithms per [RFC 9980](https://www.rfc-editor.org/rfc/rfc9980.html)); Ed25519/X25519, Ed448/X448, ECDSA/ECDH NIST P-256/P-384/P-521, RSA 3072/4096 or legacy RSA 1024/2048 |
+| **V5 — alternative** | [LibrePGP draft-koch-librepgp-06](https://www.ietf.org/archive/id/draft-koch-librepgp-06.txt) (active draft, not an approved RFC); distinct V5 keys, signatures and fingerprints, Ed25519Legacy/Curve25519Legacy, ECDSA/ECDH NIST P-256/P-384/P-521, ECDSA secp256k1, RSA 1024/2048 (legacy)/3072/4096 or DSA; requires compatible recipient software |
+| **V4 — compatibility** | [RFC 2440](https://www.rfc-editor.org/rfc/rfc2440.html), [RFC 4880](https://www.rfc-editor.org/rfc/rfc4880.html), [RFC 9580](https://www.rfc-editor.org/rfc/rfc9580.html) (compatible, deprecated by RFC 9580); Ed25519Legacy/Curve25519Legacy, Ed448/X448, ECDSA/ECDH NIST P-256/P-384/P-521, ECDSA secp256k1, RSA 1024/2048 (legacy)/3072/4096 or DSA |
+| **V3 — legacy** | Historical [RFC 1991](https://www.rfc-editor.org/rfc/rfc1991.html), [RFC 2440](https://www.rfc-editor.org/rfc/rfc2440.html), [RFC 4880](https://www.rfc-editor.org/rfc/rfc4880.html) (obsolete) RSA 1024/2048; optional validity at creation rounded up to whole days |
+| **V2 — legacy** | [RFC 1991](https://www.rfc-editor.org/rfc/rfc1991.html), historically [RFC 2440](https://www.rfc-editor.org/rfc/rfc2440.html) (obsolete) PGP 2.x RSA 1024/2048; unlimited validity in this profile |
 
 V2/V3 require explicit confirmation of obsolete MD5/IDEA, an ASCII identity/passphrase, and use derived C/S/E capabilities without A or subkeys. They are for historical compatibility; modern GnuPG may reject them. V5 is a separate LibrePGP alternative, not an alias for V6 or part of final RFC 9580. Its private exports use AES-256 CFB with iterated/salted SHA-256 S2K and the V5 secret-packet structure. V4/V6 protection is unchanged.
 
 V4 and LibrePGP V5 also offer DSA with four exact parameter profiles: **1024/160 + SHA-1**, **2048/224 + SHA-224**, **2048/256 + SHA-256**, and **3072/256 + SHA-256** (p bits / q bits). DSA is restricted to certification/signing (C/S); use a separate encryption subkey for E. The 1024/160 + SHA-1 option is historical and may require explicit legacy allowances in other software. V6 does not offer DSA, and Core rejects V6 DSA generation, signing and verification. A shared bundled algorithm catalog controls the Generator options, stored-Keychain editor and backend validation. Actual p/q sizes and the profile hash are shown in Keychain metadata. This OpenPGP functionality is separate from legacy SSH DSA-1024.
 
+ECDSA uses the hash matching its curve (SHA-256/384/512 for P-256/384/521). Each profile offers what its own specification defines, even where a newer RFC discourages generation: RSA 1024/2048 are marked legacy in V4/V5/V6 (RFC 9580 no longer recommends generating RSA below 3072 bits, and Sequoia-based software rejects RSA below 2048). Ed448/X448 (RFC 9580 algorithms 28/26) are offered in V4 and V6; GnuPG does not support them. The Generator shows the defining specification and its status next to every version. secp256k1 is an ECDSA signing curve outside RFC 9580: GnuPG accepts it, while Sequoia-based software (including the keys2 keyserver) rejects it. Brainpool curves, ElGamal, LibrePGP Kyber (algorithm 8, V4/V5) and GnuPG-style Ed448/X448 for V4/V5 are not generated.
+
 V4/V5/V6 support up to eight subkeys during generation. Generated and stored private identities support adding and revoking subkeys and changing primary/subkey expiration without changing the primary fingerprint. Open a stored identity with **Subkeys and expiration…** in Keychain; these controls live in Key Generator. Historical V2/V3 validity cannot be edited after generation. All five profiles provide private/public import and export, detached binary file signatures, verification and primary self-revocation. Compatibility-profile file signatures are limited to 64 MiB. C/S/A/E labels appear alongside primary/subkey fingerprints; declared, derived and effective capabilities are shown separately.
 
 All generated files are visible and exportable: private and public ASCII-armored certificates including their subkeys, and a separate `.rev` public revocation certificate. Storage in the encrypted Keychain is optional; generation works while the vault is locked. All generation and local operations run in Rust; GnuPG is used only for independent development tests.
 
-Keychain can publish public OpenPGP V4/V6 certificates to **https://keys.ch-j.de**, check their availability, and publish a cryptographically signed revocation. The service is reachable over IPv4 and IPv6. V2/V3/V5 publishing and lookup are disabled in the application; current server integration supports V4/V6. Private keys stay in the local vault. Publishing is explicit and optional; local key generation and storage continue to work offline. If publishing fails after local revocation, the key remains revoked locally and the UI offers a retry. The client uses verified HTTPS, rejects redirects and confirms the returned fingerprint and revocation.
+Keychain can publish public OpenPGP V4/V6 certificates to **https://keys2.ch-j.de**, check their availability, and publish a cryptographically signed revocation. The service is reachable over IPv4 and IPv6. V2/V3/V5 publishing and lookup are disabled in the application; current server integration supports V4/V6. Private keys stay in the local vault. Publishing is explicit and optional; local key generation and storage continue to work offline. If publishing fails after local revocation, the key remains revoked locally and the UI offers a retry. The client uses verified HTTPS, rejects redirects and confirms the returned fingerprint and revocation.
 
 ### Post-quantum and hybrid cryptography
 
@@ -297,7 +299,7 @@ Interoperability was verified using the published RFC 9980 vectors, Sequoia 2.4/
 
 CH-J Keys PQ publication is prepared but production-server acceptance has not been verified. Uploads contain only verified public material. For new V6 PQ certificates, email User IDs are omitted from the upload; self-certification does not establish email ownership. A V4 PQ certificate with an email identity is stopped before upload and requires the server's explicit identity-verification workflow. Local certificates remain intact. Unsupported server formats are distinguished from local cryptographic verification failures.
 
-Hardware tokens, arbitrary keyserver/WKD publishing, certification/Web of Trust, TSA, SSH CA/KRL are not implemented. Hagrid distributes OpenPGP certificates; SSH identities stay local. Email-based discovery requires the owner to verify their email address; CH-J Keys sends these verification messages through the existing mail service. Publishing a key or verifying an email does not certify a real-world identity. The generator and Keychain work locally without a CH-J server.
+Hardware tokens, arbitrary keyserver/WKD publishing, certification/Web of Trust, TSA, SSH CA/KRL are not implemented. keys2.ch-j.de distributes OpenPGP certificates; SSH identities stay local. Email-based discovery requires the owner to verify their email address; CH-J Keys sends these verification messages through the existing mail service. Publishing a key or verifying an email does not certify a real-world identity. The generator and Keychain work locally without a CH-J server.
 
 The vault password cannot be recovered. **Forgot password / reset vault** deletes encrypted server profiles, saved SSH passwords, trusted host fingerprints, and other encrypted data. Update settings and installed plugins are preserved.
 
@@ -373,7 +375,7 @@ Two independent applications share the CH-J server-management focus. Each connec
 | Server access | Multiple SSH sessions, interactive terminals, SFTP and Monaco remote editing | One active SSH session, PTY terminal and SFTP browsing/transfers; no remote text editor |
 | Administration | Diagnostics, local Hash & Checksum and first-party management tools | Foreground Linux monitoring and IPv4/IPv6 DNS/TCP diagnostics; no desktop plugin system or local hashing tool |
 | Profile exchange | JSON version 1 and desktop CSV | Shared JSON version 1; no CSV |
-| Status | Beta `0.1.2` | Development alpha `0.0.1`; Android packages and unsigned iOS development artifacts on the official website |
+| Status | Beta `0.1.3` | Development alpha `0.0.1`; Android packages and unsigned iOS development artifacts on the official website |
 | Project README | [Desktop on GitHub](https://github.com/ch-j-code/CH-J-Servermanager) | [CH-J Tools Mobile on GitHub](https://github.com/ch-j-code/SM-Mobile) |
 | Official website | [Desktop](https://tools.ch-j.cz/cs/) | [Mobile](https://tools.ch-j.cz/cs/?edition=mobile) |
 | Source catalog | [Desktop sources](https://tools.ch-j.cz/cs/source/) | [Mobile sources](https://tools.ch-j.cz/cs/source/?edition=mobile) |
